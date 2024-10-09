@@ -12,6 +12,11 @@ package imageprocessing;
 import javax.imageio.*;
 import java.awt.*;
 import java.awt.image.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 public class MyWindow extends javax.swing.JFrame {
@@ -20,9 +25,13 @@ public class MyWindow extends javax.swing.JFrame {
      * Creates new form MyWindow
      */
     BufferedImage img,ori;
+    Thread t;
+    boolean isStart; 
     
     public MyWindow() {
         initComponents();
+        isStart=false;
+        t=null;
     }
     public BufferedImage zoomImage(BufferedImage mImg)
     {
@@ -96,6 +105,8 @@ public class MyWindow extends javax.swing.JFrame {
 
         jMenuItem8 = new javax.swing.JMenuItem();
         pImage = new javax.swing.JPanel();
+        jTime = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -129,8 +140,17 @@ public class MyWindow extends javax.swing.JFrame {
         );
         pImageLayout.setVerticalGroup(
             pImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 603, Short.MAX_VALUE)
+            .addGap(0, 374, Short.MAX_VALUE)
         );
+
+        jTime.setText("jLabel1");
+
+        jButton1.setText("Start");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -229,12 +249,22 @@ public class MyWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pImage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 14, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(jTime, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(45, 45, 45)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pImage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 15, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTime, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1))
+                .addGap(0, 185, Short.MAX_VALUE))
         );
 
         pack();
@@ -332,6 +362,35 @@ public class MyWindow extends javax.swing.JFrame {
         img=adjustImage(img,-20,0,0,0);
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        isStart=!isStart;
+        if(isStart)
+        {
+        t=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(isStart)
+                {
+                    try {
+                        Thread.sleep(1000);
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date date = new Date();
+                       
+                        jTime.setText(dateFormat.format(date));
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MyWindow.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        t.start();
+        jButton1.setText("Stop");
+        }
+        else jButton1.setText("Start");
+            
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -368,6 +427,7 @@ public class MyWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -382,6 +442,7 @@ public class MyWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JLabel jTime;
     private javax.swing.JPanel pImage;
     // End of variables declaration//GEN-END:variables
 }
